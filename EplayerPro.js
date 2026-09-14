@@ -1,13 +1,3 @@
-/**
- * @name EplayerX 会员解锁 (合一单文件版)
- * 
- * [rewrite_local]
- * ^https:\/\/api\.revenuecat\.com\/v1\/(subscribers|receipts) url script-response-body https://raw.githubusercontent.com/shenao0308/IOS-rewrite/refs/heads/main/EplayerPro.js
- * 
- * [mitm]
- * hostname = api.revenuecat.com
- */
-
 let body = $response.body;
 if (body) {
     let obj = JSON.parse(body);
