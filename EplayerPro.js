@@ -1,6 +1,13 @@
-/*
- * EplayerX & RevenueCat 通用解锁脚本
+/**
+ * @name EplayerX 会员解锁 (合一单文件版)
+ * 
+ * [rewrite_local]
+ * ^https:\/\/api\.revenuecat\.com\/v1\/(subscribers|receipts) url script-response-body https://raw.githubusercontent.com/shenao0308/IOS-rewrite/refs/heads/main/EplayerPro.js
+ * 
+ * [mitm]
+ * hostname = api.revenuecat.com
  */
+
 let body = $response.body;
 if (body) {
     let obj = JSON.parse(body);
@@ -29,7 +36,6 @@ if (body) {
         obj.subscriber.entitlements = obj.subscriber.entitlements || {};
         obj.subscriber.subscriptions = obj.subscriber.subscriptions || {};
 
-        // 针对 EplayerX 代码中涉及的标识符及常规标识
         const targetKeys = [
             "pro", "Pro", "pro_access", "all_access",
             "eplayer.mac.pro.isPro", "eplayer.mac.pro.isAllAccess",
@@ -37,13 +43,11 @@ if (body) {
             "isPro", "isAllAccess", "premium", "VIP"
         ];
 
-        // 1. 如果原始返回里已有任意订阅，强制将其改到 2099 年
         for (let key in obj.subscriber.entitlements) {
             obj.subscriber.entitlements[key].expires_date = "2099-12-31T23:59:59Z";
             obj.subscriber.entitlements[key].purchase_date = "2023-01-01T00:00:00Z";
         }
 
-        // 2. 注入 Pro 权限
         targetKeys.forEach(key => {
             obj.subscriber.entitlements[key] = Object.assign({}, proEntitlement, { product_identifier: key });
             obj.subscriber.subscriptions[key] = proSubscription;
